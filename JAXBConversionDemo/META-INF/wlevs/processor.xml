@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application">
+  <processor>
+    <name>OrderErrorProcessor</name>
+    <rules>
+      <query id="AllErrorQuery">  <![CDATA[ 
+         select * from OrderErrorInputChannel 
+    ]]></query>
+    </rules>
+  </processor>
+</wlevs:config>

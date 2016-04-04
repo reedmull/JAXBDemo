@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:wlevs="http://www.bea.com/ns/wlevs/spring"
+       xmlns:jdbc="http://www.oracle.com/ns/ocep/jdbc"
+       xmlns:hadoop="http://www.oracle.com/ns/oep/hadoop"
+       xmlns:nosqldb="http://www.oracle.com/ns/oep/nosqldb"
+       xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/osgi
+  http://www.springframework.org/schema/osgi/spring-osgi.xsd
+  http://www.bea.com/ns/wlevs/spring
+  http://www.bea.com/ns/wlevs/spring/ocep-epn.xsd
+  http://www.oracle.com/ns/ocep/jdbc
+  http://www.oracle.com/ns/ocep/jdbc/ocep-jdbc.xsd
+  http://www.oracle.com/ns/oep/hadoop
+  http://www.oracle.com/ns/oep/hadoop/oep-hadoop.xsd
+  http://www.oracle.com/ns/oep/nosqldb
+  http://www.oracle.com/ns/oep/nosqldb/oep-nosqldb.xsd">
+  
+   <wlevs:event-type-repository >
+        <wlevs:event-type type-name="OrderErrorEvent">
+            <wlevs:class >com.csc.oep.ordererror.OrderErrorEvent</wlevs:class>
+        </wlevs:event-type>
+    </wlevs:event-type-repository>
+    
+    <wlevs:adapter id="jms-inbound-adapter" provider="jms-inbound">
+      <wlevs:instance-property name="converterBean" ref="jmsJaxbMessageConverter"/> 
+      <wlevs:listener ref="OrderErrorInputChannel"/>
+    </wlevs:adapter>
+
+    <wlevs:channel id="OrderErrorInputChannel" event-type="OrderErrorEvent">
+        <wlevs:listener ref="OrderErrorProcessor"/>
+    </wlevs:channel>
+
+    <wlevs:processor id="OrderErrorProcessor" />
+    
+
+    <wlevs:channel id="OrderErrorOutputChannel" event-type="OrderErrorEvent">
+        <wlevs:listener ref="jms-outbound-adapter"/>
+        <wlevs:source ref="OrderErrorProcessor"/>
+    </wlevs:channel>
+
+    <wlevs:adapter id="jms-outbound-adapter" provider="jms-outbound">
+        <wlevs:instance-property name="converterBean" ref="jmsJaxbMessageConverter"/> 
+    </wlevs:adapter>
+ 
+    
+    <bean id="jmsJaxbMessageConverter" class="com.csc.oep.ordererror.JmsJaxbMessageConverter">
+        <property name="xmlMapper" ref="xmlMapper"/>
+    </bean> 
+    
+    <bean id="xmlMapper" class="com.oracle.cep.mappers.jaxb.JAXBMapperFactory"
+       factory-method="create">
+       <property name="eventTypeName" value="OrderErrorEvent" />
+       <property name="metadata" value="orderErrorEventMetadata.xml" />
+   </bean>
+   
+   
+
+</beans>

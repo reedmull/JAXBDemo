@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application">
+ <jms-adapter>
+    <name>jms-inbound-adapter</name>
+    <jndi-provider-url>t3://vmi67182.contabo.host:7001</jndi-provider-url>
+    <jndi-factory>weblogic.jndi.WLInitialContextFactory</jndi-factory>
+    <connection-jndi-name>jms/OrderErrorCF</connection-jndi-name>
+    <destination-jndi-name>jms/OrderErrorQueue</destination-jndi-name>
+    <session-transacted>false</session-transacted>
+  </jms-adapter>
+  <jms-adapter>
+    <name>jms-outbound-adapter</name>
+    <jndi-provider-url>t3://vmi67182.contabo.host:7001</jndi-provider-url>
+    <jndi-factory>weblogic.jndi.WLInitialContextFactory</jndi-factory>
+    <connection-jndi-name>jms/OrderErrorCF</connection-jndi-name>
+    <destination-jndi-name>jms/OrderErrorOutQueue</destination-jndi-name>
+    <session-transacted>false</session-transacted>
+  </jms-adapter>
+</wlevs:config>
